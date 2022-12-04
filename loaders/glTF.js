@@ -349,6 +349,35 @@ function handleMaterial(material, gltf, ctx) {
     }
 
     if (material.extensions) {
+      // https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_specular
+      if (material.extensions.KHR_materials_specular) {
+        const specularExt = material.extensions.KHR_materials_specular;
+        materialProps.specular =
+          specularExt.specularFactor !== undefined
+            ? specularExt.specularFactor
+            : 1;
+        materialProps.specularColor = specularExt.specularColorFactor || [
+          1, 1, 1,
+        ];
+
+        if (specularExt.specularTexture) {
+          materialProps.specularMap = getPexMaterialTexture(
+            specularExt.specularTexture,
+            gltf,
+            ctx,
+            ctx.Encoding.Linear
+          );
+        }
+        if (specularExt.specularColorTexture) {
+          materialProps.specularColorMap = getPexMaterialTexture(
+            specularExt.specularColorTexture,
+            gltf,
+            ctx,
+            ctx.Encoding.SRGB
+          );
+        }
+      }
+
       // https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_sheen#sheen
       if (material.extensions.KHR_materials_sheen) {
         const sheenExt = material.extensions.KHR_materials_sheen;

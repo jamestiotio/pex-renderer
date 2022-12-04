@@ -10,6 +10,7 @@ import lightArea from "./light-area.glsl.js";
 import shadowing from "./shadowing.glsl.js";
 import brdf from "./brdf.glsl.js";
 import clearCoat from "./clear-coat.glsl.js";
+import specular from "./specular.glsl.js";
 import irradiance from "./irradiance.glsl.js";
 import direct from "./direct.glsl.js";
 import indirect from "./indirect.glsl.js";
@@ -49,6 +50,7 @@ export default {
   shadowing,
   brdf,
   clearCoat,
+  specular,
   irradiance,
   direct,
   indirect,

@@ -71,10 +71,13 @@ struct PBRData {
   float metallic; // metallic value at the surface
   float linearRoughness; // roughness mapped to a more linear change in the roughness (proposed by [2])
   vec3 f0; // Reflectance at normal incidence, specular color
+  float f90; // Reflection color at grazing incidence
   float clearCoat;
   float clearCoatRoughness;
   float clearCoatLinearRoughness;
   vec3 clearCoatNormal;
+  float specular;
+  vec3 specularColor;
   vec3 reflectionWorld;
   vec3 directColor;
   vec3 diffuseColor; // color contribution from diffuse lighting
@@ -104,6 +107,7 @@ ${SHADERS.alpha}
   ${SHADERS.irradiance}
   ${SHADERS.shadowing}
   ${SHADERS.brdf}
+  ${SHADERS.specular}
   ${SHADERS.clearCoat}
   ${SHADERS.indirect}
   ${SHADERS.direct}
@@ -166,6 +170,7 @@ void main() {
     data.eyeDirWorld = vec3(uInverseViewMatrix * vec4(data.eyeDirView, 0.0));
     data.indirectDiffuse = vec3(0.0);
     data.indirectSpecular = vec3(0.0);
+    data.f90 = 1.0;
     data.sheen = vec3(0.0);
     data.opacity = 1.0;
 
@@ -211,6 +216,16 @@ void main() {
     // view vector in world space
     data.viewWorld = normalize(uCameraPosition - vPositionWorld);
     data.NdotV = clamp(abs(dot(data.normalWorld, data.viewWorld)) + FLT_EPS, 0.0, 1.0);
+
+    #ifdef USE_SPECULAR
+      getSpecular(data);
+      getSpecularColor(data);
+
+      vec3 dielectricSpecularF0 = min(0.04 * data.specularColor, 1.0) * data.specular;
+
+      data.f0 = mix(dielectricSpecularF0, data.baseColor.rgb, data.metallic);
+      data.f90 = mix(data.specular, 1.0, data.metallic);
+    #endif
 
     #ifdef USE_CLEAR_COAT
       getClearCoat(data);

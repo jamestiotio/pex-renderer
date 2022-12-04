@@ -50,9 +50,9 @@ float MicrofacetDistribution(float linearRoughness, float NdotH) {
 
 // FresnelSchlick
 // Same as glTF2.0 PBR Spec
-vec3 SpecularReflection(vec3 specularColor, float HdotV) {
+vec3 SpecularReflection(vec3 specularColor, float f90, float HdotV) {
   float cosTheta = HdotV;
-  return specularColor + (1.0 - specularColor) * pow(1.0 - cosTheta, 5.0);
+  return specularColor + (f90 - specularColor) * pow(1.0 - cosTheta, 5.0);
 }
 
 // Smith Joint GGX

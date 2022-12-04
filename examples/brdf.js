@@ -47,7 +47,7 @@ const gui = createGUI(ctx, {
 const W = ctx.gl.drawingBufferWidth;
 const H = ctx.gl.drawingBufferHeight;
 const nW = 11;
-const nH = 6;
+const nH = 7;
 let debugOnce = false;
 
 // Materials
@@ -74,6 +74,16 @@ for (let i = 0; i <= 10; i++) {
     baseColor: [1.0, 0.8, 0.0, 1.0],
     metallic: 1,
     roughness: i / 10,
+  });
+}
+
+for (let i = 0; i <= 10; i++) {
+  materials.push({
+    baseColor: [0, 0, 0, 1.0],
+    metallic: 0,
+    roughness: 0,
+    specular: i / 10,
+    specularColor: [0, 1, 0],
   });
 }
 
@@ -139,6 +149,7 @@ const headers = [
   "Metallic",
   "Roughness for non-metallic",
   "Roughness for metallic",
+  "Specular",
   "Reflectance",
   "Clear Coat",
   "Clear Coat Roughness",
